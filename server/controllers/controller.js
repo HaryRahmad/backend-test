@@ -73,17 +73,24 @@ class Controller {
         where: { codeMembers: codeMembers, status: "borrowed" },
       });
       let date = new Date();
-      console.log(checkMember.id, `-----------------`);
+      //   console.log(checkMember.id, `-----------------`);
 
       if (!checkMember) {
         throw { name: `member not found` };
       } else {
-        let checkPinalty = await Pinalty.findAll({
+        let checkPinalty = await Pinalty.findOne({
           where: { memberId: checkMember.id },
+          order: [["createdAt", "DESC"]],
         });
+        console.log(checkPinalty, `-----------------123123123`);
+        
+        // console.log(checkPinalty[0].pinaltyEnd, `-----------------123123123`);
         if (checkPinalty) {
-          let calculate = date - checkBorrow.createdAt;
-          if (Math.floor(calculate / (1000 * 60 * 60 * 24)) > 3) {
+          let calculate = checkPinalty.pinaltyEnd - date;
+          //   console.log(checkPinalty[0].pinaltyEnd, date,calculate, `-----------------00000000000000`);
+          let throwPinalty = Math.floor(calculate / (1000 * 60 * 60 * 24));
+          //   console.log(throwPinalty,2<=0 ,`-----------------00000000000000`);
+          if (Math.floor(calculate / (1000 * 60 * 60 * 24)) >= 0) {
             throw { name: `pinalty` };
           }
         }
@@ -104,7 +111,7 @@ class Controller {
         status: `borrowed`,
       });
       res.status(201).json({
-        message: `user ${checkmember.name} success borrow book ${chechBook.title}`,
+        message: `user ${checkMember.name} success borrow book ${chechBook.title}`,
       });
     } catch (error) {
       console.log(error);
@@ -136,7 +143,7 @@ class Controller {
       });
       let newdate = new Date();
       let calculate = newdate - checkBorrow.createdAt;
-    //   console.log(checkBook.stock, `-----------------`);
+      //   console.log(checkBook.stock, `-----------------`);
 
       if (!checkBorrow) {
         throw { name: `borrow not found` };
