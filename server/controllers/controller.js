@@ -2,6 +2,15 @@ const { where, Op } = require("sequelize");
 const { Book, Member, Borrow, Pinalty } = require("../models");
 
 class Controller {
+  /**
+   * @swagger
+   * /books:
+   *   get:
+   *     summary: Retrieve a list of books
+   *     responses:
+   *       200:
+   *         description: A list of books
+   */
   static async getBook(req, res) {
     try {
       let data = await Book.findAll({
@@ -27,6 +36,15 @@ class Controller {
       }
     }
   }
+  /**
+   * @swagger
+   * /members:
+   *   get:
+   *     summary: Retrieve a list of members
+   *     responses:
+   *       200:
+   *         description: A list of members
+   */
   static async getMember(req, res) {
     try {
       let data = await Member.findAll({
@@ -64,6 +82,32 @@ class Controller {
       }
     }
   }
+  /**
+   * @swagger
+   * /borrowBook:
+   *   post:
+   *     summary: Borrow a book
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               codeMembers:
+   *                 type: string
+   *                 example: "M002"
+   *               codeBooks:
+   *                 type: string
+   *                 example: "JK-45"
+   *     responses:
+   *       200:
+   *         description: Book borrowed successfully
+   *       400:
+   *         description: Bad request
+   *       500:
+   *         description: Internal server error
+   */
   static async memberBorrow(req, res) {
     try {
       let { codeMembers, codeBooks } = req.body;
@@ -83,7 +127,7 @@ class Controller {
           order: [["createdAt", "DESC"]],
         });
         console.log(checkPinalty, `-----------------123123123`);
-        
+
         // console.log(checkPinalty[0].pinaltyEnd, `-----------------123123123`);
         if (checkPinalty) {
           let calculate = checkPinalty.pinaltyEnd - date;
@@ -133,6 +177,32 @@ class Controller {
       }
     }
   }
+  /**
+   * @swagger
+   * /returnBook:
+   *   post:
+   *     summary: Return a borrowed book
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               id:
+   *                 type: integer
+   *                 example: 2
+   *               memberId:
+   *                 type: integer
+   *                 example: 2
+   *     responses:
+   *       200:
+   *         description: Book returned successfully
+   *       400:
+   *         description: Bad request
+   *       500:
+   *         description: Internal server error
+   */
   static async returnBook(req, res) {
     try {
       let { id, memberId } = req.body;
