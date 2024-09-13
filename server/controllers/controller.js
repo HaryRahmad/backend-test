@@ -26,14 +26,7 @@ class Controller {
       // console.log(data);
       res.status(200).json(data);
     } catch (error) {
-      if (
-        error.name === `SequelizeConstraintError` ||
-        error.name === `SequelizeValidationError`
-      ) {
-        res.status(400).json({ message: error.message });
-      } else {
         res.status(500).json({ message: `internal server error` });
-      }
     }
   }
   /**
@@ -70,16 +63,8 @@ class Controller {
       res.status(200).json(getmuchBorrow);
       return getmuchBorrow;
     } catch (error) {
-      console.log(error);
-
-      if (
-        error.name === `SequelizeConstraintError` ||
-        error.name === `SequelizeValidationError`
-      ) {
-        res.status(400).json({ message: error.message });
-      } else {
+      // console.log(error);
         res.status(500).json({ message: `internal server error` });
-      }
     }
   }
   /**
@@ -155,7 +140,7 @@ class Controller {
         status: `borrowed`,
       });
       res.status(201).json({
-        message: `user ${checkMember.name} success borrow book ${chechBook.title}`,
+        message: `user success borrow book`,
       });
     } catch (error) {
       console.log(error);
@@ -169,7 +154,7 @@ class Controller {
       } else if (error.name === `book not found`) {
         res.status(404).json({ message: `book not found` });
       } else if (error.name === `borrowgt2`) {
-        res.status(400).json({ message: `member has borrowed 2 books` });
+        res.status(400).json({ message: `Member has already borrowed 2 books` });
       } else if (error.name === `pinalty`) {
         res.status(400).json({ message: `you in pinalty` });
       } else {
@@ -242,7 +227,7 @@ class Controller {
           { stock: checkBook.stock + 1 },
           { where: { code: checkBorrow.codeBooks } }
         );
-        res.status(200).json({ message: `book has been returned` });
+        res.status(200).json({ message: `Book returned successfully` });
       }
     } catch (error) {
       console.log(error);
